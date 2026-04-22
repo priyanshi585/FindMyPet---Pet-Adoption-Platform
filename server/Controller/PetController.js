@@ -5,7 +5,12 @@ const path = require('path');
 const postPetRequest = async (req, res) => {
   try {
     const { name, age, area, justification, email, phone, type } = req.body;
-    const { filename } = req.file;
+    const pictureFilename = req.files && req.files.picture ? req.files.picture[0].filename : null;
+    const medicalReportFilename = req.files && req.files.medicalReport ? req.files.medicalReport[0].filename : null;
+
+    if (!pictureFilename) {
+      return res.status(400).json({ error: "Picture is required" });
+    }
 
     const pet = await Pet.create({
       name,
@@ -15,7 +20,8 @@ const postPetRequest = async (req, res) => {
       email,
       phone,
       type,
-      filename,
+      filename: pictureFilename,
+      medicalReportFilename: medicalReportFilename,
       status: 'Pending'
     });
 
@@ -44,11 +50,8 @@ const approveRequest = async (req, res) => {
 const allPets = async (reqStatus, req, res) => {
   try {
     const data = await Pet.find({ status: reqStatus }).sort({ updatedAt: -1 });
-    if (data.length > 0) {
-      res.status(200).json(data);
-    } else {
-      res.status(404).json({ error: 'No data found' });
-    }
+    // Return array even if empty, don't throw error
+    res.status(200).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -61,11 +64,21 @@ const deletePost = async (req, res) => {
     if (!pet) {
       return res.status(404).json({ error: 'Pet not found' });
     }
-    const filePath = path.join(__dirname, '../images', pet.filename);
-
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    
+    // Delete picture file
+    const picturePath = path.join(__dirname, '../images', pet.filename);
+    if (fs.existsSync(picturePath)) {
+      fs.unlinkSync(picturePath);
     }
+
+    // Delete medical report file if it exists
+    if (pet.medicalReportFilename) {
+      const medicalReportPath = path.join(__dirname, '../images', pet.medicalReportFilename);
+      if (fs.existsSync(medicalReportPath)) {
+        fs.unlinkSync(medicalReportPath);
+      }
+    }
+
     res.status(200).json({ message: 'Pet deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

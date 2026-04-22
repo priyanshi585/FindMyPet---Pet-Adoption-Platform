@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 router.get('/requests', (req, res) => allPets('Pending', req, res));
 router.get('/approvedPets', (req, res) => allPets('Approved', req, res));
 router.get('/adoptedPets', (req, res) => allPets('Adopted', req, res));
-router.post('/services', upload.single('picture'), postPetRequest);
+router.post('/services', upload.fields([{ name: 'picture', maxCount: 1 }, { name: 'medicalReport', maxCount: 1 }]), postPetRequest);
 router.put('/approving/:id', approveRequest);
 router.delete('/delete/:id', deletePost);
 

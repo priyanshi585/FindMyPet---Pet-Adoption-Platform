@@ -8,14 +8,16 @@ import Contact from "./Components/Contact/Contact";
 import Pets from "./Components/Pets/Pets";
 import AdoptForm from "./Components/AdoptForm/AdoptForm";
 import AdminLogin from "./Components/AdminPanel/AdminLogin";
+import Community from "./Components/Community/Community";
+import Chatbot from "./Components/Chatbot/Chatbot";
 import "./App.css";
 import HomePage from "./Components/auth/HomePage";
 
 const Layout = ({ children }) => (
   <>
-    <Navbar title="HomeGate" />
+    <Navbar title="FindMyPet" />
     {children}
-    <Footer title="HomeGate" />
+    <Footer title="FindMyPet" />
   </>
 );
 
@@ -64,6 +66,14 @@ const App = () => {
           } 
         />
         <Route 
+          path="/community" 
+          element={
+            <Layout>
+              <Community />
+            </Layout>
+          } 
+        />
+        <Route 
           path="/adopt-form" 
           element={
             <Layout>
@@ -74,6 +84,14 @@ const App = () => {
         <Route 
           path="/admin" 
           element={<AdminLogin />} 
+        />
+        <Route 
+          path="/chatbot" 
+          element={
+            <Layout>
+              <Chatbot />
+            </Layout>
+          } 
         />
       </Routes>
     </Router>

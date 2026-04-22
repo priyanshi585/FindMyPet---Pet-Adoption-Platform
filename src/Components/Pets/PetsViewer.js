@@ -24,7 +24,13 @@ const PetsViewer = (props) => {
         <p><b>Type:</b> {props.pet.type}</p>
         <p><b>Age:</b> {props.pet.age}</p>
         <p><b>Location:</b> {props.pet.area}</p>
-        <p>{formatTimeAgo(props.pet.updatedAt)}</p>
+        <p><b>Posted by:</b> {formatTimeAgo(props.pet.updatedAt)}</p>
+        
+        <div className='contact-info'>
+          <p><b>Contact Info:</b></p>
+          <p>📧 <a href={`mailto:${props.pet.email}`}>{props.pet.email}</a></p>
+          <p>📱 <a href={`tel:${props.pet.phone}`}>{props.pet.phone}</a></p>
+        </div>
       </div>
       <div className='show-interest-btn'>
         <button onClick={togglePopup}>Show Interest <i className="fa fa-paw"></i></button>

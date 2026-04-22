@@ -17,7 +17,7 @@ const SignUp = () => {
     const [pic, setPic] = useState();
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
-    const endpoint = process.env.REACT_APP_BASE_URL;
+    const endpoint = process.env.REACT_APP_BASE_URL || 'http://localhost:4000';
     const handleClick = () => setShow(!show);
     const toast = useToast();
     const navigate = useNavigate();
@@ -243,11 +243,11 @@ const SignUp = () => {
             // localStorage.setItem("userInfo", JSON.stringify(data));
             // setLoading(false);
             // navigate('/home');
-            Cookies.set("homegate-token", JSON.stringify(data), {
+            const token = data?.token || data;
+            Cookies.set("homegate-token", token, {
                 expires: 1, // 1 day expiry
-                secure: true, // HTTPS only
-                sameSite: "Strict", // Protect against CSRF
-                // sameSite: "Lax", // Cross-origin compatibility
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "Lax",
                 path: "/"
             });
              setLoading(false);

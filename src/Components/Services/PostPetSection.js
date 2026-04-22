@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Notification from "../UI/Notification";
 import postPet from "./images/postPet.png";
 
 const PostPetSection = () => {
@@ -12,9 +13,12 @@ const PostPetSection = () => {
   const [emailError, setEmailError] = useState(false);
   const [ageError, setAgeError] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [type, setType] = useState("None");
   const [picture, setPicture] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [medicalReport, setMedicalReport] = useState(null);
+  const [medicalFileName, setMedicalFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false); 
   const endpoint = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
@@ -34,11 +38,19 @@ const PostPetSection = () => {
     return emailPattern.test(email);
   };
 
-  const handleFileChange = (e) => {
+  const handlePictureChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setPicture(selectedFile);
       setFileName(selectedFile.name);
+    }
+  };
+
+  const handleMedicalReportChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setMedicalReport(selectedFile);
+      setMedicalFileName(selectedFile.name);
     }
   };
 
@@ -53,6 +65,7 @@ const PostPetSection = () => {
       !email ||
       !phone ||
       !fileName ||
+      !medicalFileName ||
       type === "None" ||
       ageError
     ) {
@@ -80,6 +93,10 @@ const PostPetSection = () => {
       formData.append("picture", picture);
     }
 
+    if (medicalReport) {
+      formData.append("medicalReport", medicalReport);
+    }
+
     try {
       const response = await fetch(`${endpoint}/services`, {
         method: "POST",
@@ -97,12 +114,17 @@ const PostPetSection = () => {
       setName("");
       setAge("");
       setArea("");
+      setMedicalReport(null);
+      setMedicalFileName("");
       setJustification("");
       setEmail("");
       setPhone("");
       setPicture(null);
       setFileName("");
-      togglePopup();
+      // show modern notification instead of old popup
+      setNotification("Application Submitted; we'll get in touch with you soon.");
+      // keep legacy popup state for compatibility (not used)
+      setShowPopup(false);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -145,7 +167,7 @@ const PostPetSection = () => {
               className="file-input"
               type="file"
               accept="image/*"
-              onChange={handleFileChange}
+              onChange={handlePictureChange}
             />
           </label>
         </div>
@@ -212,13 +234,13 @@ const PostPetSection = () => {
           <label>Medical Report:</label>
           <label className="post-report-pictue">
             <span className="file-input-text">
-              {fileName || "Upload  Report"}
+              {medicalFileName || "Upload  Report"}
             </span>
             <input
               className="file-input"
               type="file"
               accept="image/*"
-              onChange={handleFileChange}
+              onChange={handleMedicalReportChange}
             />
           </label>
         </div>
@@ -234,15 +256,13 @@ const PostPetSection = () => {
           {isSubmitting ? "Submitting..." : "Submit Your Pet"}
         </button>
 
-        {showPopup && (
-          <div className="popup">
-            <div className="popup-content">
-              <h4>Application Submitted; we'll get in touch with you soon.</h4>
-            </div>
-            <button onClick={togglePopup} className="close-btn">
-              Close <i className="fa fa-times"></i>
-            </button>
-          </div>
+        {notification && (
+          <Notification
+            message={notification}
+            type="success"
+            duration={4500}
+            onClose={() => setNotification(null)}
+          />
         )}
       </form>
     </section>

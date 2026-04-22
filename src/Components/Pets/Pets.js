@@ -10,20 +10,25 @@ const Pets = () => {
     const fetchRequests = async () => {
       try {
         const response = await fetch(`${endpoint}/approvedPets`)
-        if (!response.ok) {
-          throw new Error('An error occurred')
-        }
         const data = await response.json()
-        setPetsData(data)
+        
+        // Check if data is an error object or an array
+        if (response.ok && Array.isArray(data)) {
+          setPetsData(data)
+        } else {
+          // If not ok or not an array, set empty array
+          setPetsData([])
+        }
       } catch (error) {
         console.log(error)
+        setPetsData([])
       } finally {
         setLoading(false)
       }
     }
 
     fetchRequests();
-  }, [])
+  }, [endpoint])
 
   const filteredPets = petsData.filter((pet) => {
     if (filter === "all") {

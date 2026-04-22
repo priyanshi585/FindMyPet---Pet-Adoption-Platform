@@ -5,4 +5,4 @@ const getCredentials = (req, res) => {
     res.status(200).json(Credentials)
 }
 
-module.exports = { getCredentials }
+module.exports = { getCredentials } 

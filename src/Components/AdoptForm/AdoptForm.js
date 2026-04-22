@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Notification from "../UI/Notification";
 
 function AdoptForm(props) {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ function AdoptForm(props) {
   const [emailError, setEmailError] = useState(false);
   const [ErrPopup, setErrPopup] = useState(false);
   const [SuccPopup, setSuccPopup] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const endpoint = process.env.REACT_APP_BASE_URL;
   const isEmailValid = (email) => {
@@ -57,14 +59,18 @@ function AdoptForm(props) {
       })
 
       if (!response.ok) {
-        setErrPopup(true)
+        setNotification({ message: "Oops!... Connection Error.", type: "error" });
         return;
       } else {
-        setSuccPopup(true)
+        setNotification({ 
+          message: `Adoption Form of ${props.pet.name} is Submitted; we'll get in touch with you soon for further process.`,
+          type: "success",
+          onClose: () => props.closeForm()
+        });
       }
     }
     catch (err) {
-      setErrPopup(true)
+      setNotification({ message: "Oops!... Connection Error.", type: "error" });
       console.error(err);
       return;
     } finally {
@@ -162,32 +168,16 @@ function AdoptForm(props) {
             <button disabled={isSubmitting} type="submit" className="custom-cta-button custom-m-b">
               {isSubmitting ? 'Submitting' : 'Submit'}
             </button>
-            {ErrPopup && (
-              <div className="popup">
-                <div className="popup-content">
-                  <h4>
-                    Oops!... Connection Error.
-                  </h4>
-                </div>
-                <button onClick={(e) => (setErrPopup(!ErrPopup))} className="close-btn">
-                  Close <i className="fa fa-times"></i>
-                </button>
-              </div>
-            )}
-            {SuccPopup && (
-              <div className="popup">
-                <div className="popup-content">
-                  <h4>
-                    Adoption Form of {props.pet.name} is Submitted; we'll get in touch with you soon for further process.
-                  </h4>
-                </div>
-                <button onClick={(e) => {
-                  setSuccPopup(!SuccPopup);
-                  props.closeForm();
-                }} className="close-btn">
-                  Close <i className="fa fa-times"></i>
-                </button>
-              </div>
+            {notification && (
+              <Notification
+                message={notification.message}
+                type={notification.type}
+                duration={notification.type === "error" ? 4000 : 4500}
+                onClose={() => {
+                  setNotification(null);
+                  if (notification.onClose) notification.onClose();
+                }}
+              />
             )}
           </form>
         </div>

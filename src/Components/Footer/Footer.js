@@ -15,7 +15,7 @@ const Footer = (props) => {
         <p>
           You can reach me at{" "}
           <a className="mail-links" href="mailto:homegate.info@gmail.com">
-          homegate.info@gmail.com
+          findmypet.info@gmail.com
           </a>
         </p>
         <p>
@@ -55,7 +55,7 @@ const Footer = (props) => {
             <i className="fa fa-whatsapp"></i> WhatsApp
           </a>
         </p>
-        <p>&copy; 2024 HomeGate</p>
+        <p>&copy; 2026 FindMyPet</p>
       </div>
     </footer>
   );

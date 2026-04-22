@@ -5,6 +5,7 @@ const petRouter = require('./Routes/PetRoute')
 const AdoptFormRoute = require('./Routes/AdoptFormRoute')
 const userRoutes = require('./Routes/userRoutes');
 const AdminRoute = require('./Routes/AdminRoute');
+const postRoutes = require('./Routes/PostRoute');
 const { notFound, errorHandler } = require("./middlewares/errrorMIddleware");
 const cors = require('cors');
 const path = require('path');
@@ -41,10 +42,14 @@ app.get('/',(req,res)=>{
         "name" :"BACKEND OF HOMEGATE"
     })
 })
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 app.use(petRouter)
 app.use('/form', AdoptFormRoute)
 app.use('/admin', AdminRoute)
 app.use('/api/user',userRoutes)
+app.use('/api/posts', postRoutes)
 
 
 

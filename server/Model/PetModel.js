@@ -34,6 +34,10 @@ const PetSchema = new schema({
         type: String,
         required: true
     },
+    medicalReportFilename: {
+        type: String,
+        required: false
+    },
     status: {
         type: String,
         required: true

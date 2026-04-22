@@ -3,6 +3,8 @@
  const otpGenerator = require("otp-generator");
  const User = require("../Model/userModel");
  const OTP = require("../Model/OTP");
+ const mailSender = require("../mail/mailSender");
+ const otpTemplate = require("../mail/emailVerificationTemplate");
 const sendOtp = asyncHandler(async (req, res) => {
 	try {
 		const { email } = req.body;
@@ -38,6 +40,14 @@ const sendOtp = asyncHandler(async (req, res) => {
 		const otpPayload = { email, otp };
 		const otpBody = await OTP.create(otpPayload);
 		console.log("OTP Body", otpBody);
+
+		// Send OTP via email (non-blocking - don't let email errors prevent OTP save)
+		try {
+			await mailSender(email, "OTP Verification", otpTemplate(otp));
+			console.log("OTP email sent successfully");
+		} catch (emailError) {
+			console.log("Warning: Failed to send OTP email, but OTP saved to DB:", emailError.message);
+		}
 
 		res.status(200).json({
 			success: true,
