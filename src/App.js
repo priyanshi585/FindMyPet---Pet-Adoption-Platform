@@ -23,7 +23,7 @@ const Layout = ({ children }) => (
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/FindMyPet---Pet-Adoption-Platform">
       <Routes>
       <Route 
           path="/" 

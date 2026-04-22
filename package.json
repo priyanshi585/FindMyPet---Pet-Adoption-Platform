@@ -40,10 +40,12 @@
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },
-  "homepage": " https://devgupta0513.github.io/Pet-Adoption-Platform-major",
+  "homepage": "https://priyanshi585.github.io/FindMyPet---Pet-Adoption-Platform",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": " cd server && npm run server",
